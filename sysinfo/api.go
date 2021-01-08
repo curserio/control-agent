@@ -1,7 +1,7 @@
 package sysinfo
 
 import (
-	"github.com/curserio/control-agent/internal"
+	"github.com/curserio/control-agent/agent"
 	"github.com/shirou/gopsutil/mem"
 )
 
@@ -12,16 +12,16 @@ func New() *SystemInfoAPI {
 	return &SystemInfoAPI{}
 }
 
-func (a *SystemInfoAPI) DiskUsage(path string, reply *internal.DiskUsageReply) error {
+func (a *SystemInfoAPI) DiskUsage(path string, reply *agent.DiskUsageReply) error {
 	u, err := diskUsage(path)
 	if err != nil {
 		return err
 	}
 
-	stat := make([]*internal.DiskUsage, len(u))
+	stat := make([]*agent.DiskUsage, len(u))
 
 	for i, d := range u {
-		stat[i] = &internal.DiskUsage{
+		stat[i] = &agent.DiskUsage{
 			Path:        d.Path,
 			Total:       d.Total,
 			Free:        d.Free,
@@ -35,7 +35,7 @@ func (a *SystemInfoAPI) DiskUsage(path string, reply *internal.DiskUsageReply) e
 	return nil
 }
 
-func (a *SystemInfoAPI) MemoryUsage(nilArg interface{}, reply *internal.MemoryUsageReply) error {
+func (a *SystemInfoAPI) MemoryUsage(nilArg interface{}, reply *agent.MemoryUsageReply) error {
 	vm, err := mem.VirtualMemory()
 	if err != nil {
 		return err
@@ -50,7 +50,7 @@ func (a *SystemInfoAPI) MemoryUsage(nilArg interface{}, reply *internal.MemoryUs
 	return nil
 }
 
-func (a *SystemInfoAPI) SwapUsage(nilArg interface{}, reply *internal.MemoryUsageReply) error {
+func (a *SystemInfoAPI) SwapUsage(nilArg interface{}, reply *agent.MemoryUsageReply) error {
 	vm, err := mem.SwapMemory()
 	if err != nil {
 		return err
@@ -64,18 +64,18 @@ func (a *SystemInfoAPI) SwapUsage(nilArg interface{}, reply *internal.MemoryUsag
 	return nil
 }
 
-func (a *SystemInfoAPI) Processes(req *internal.ProcessesReq, reply *internal.ProcessesReply) error {
+func (a *SystemInfoAPI) Processes(req *agent.ProcessesReq, reply *agent.ProcessesReply) error {
 	processes, err := processesInfo()
 	if err != nil {
 		return err
 	}
 
 	switch req.Sort {
-	case internal.ByName:
+	case agent.ByName:
 		sortByName(processes)
-	case internal.ByCPUUsage:
+	case agent.ByCPUUsage:
 		sortByCPUUsage(processes)
-	case internal.ByMemoryUsage:
+	case agent.ByMemoryUsage:
 		sortByMemoryUsage(processes)
 	}
 

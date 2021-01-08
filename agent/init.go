@@ -1,4 +1,4 @@
-package internal
+package agent
 
 func Init(api SystemInfoAPI, listener Listener) *Core {
 	core := &Core{

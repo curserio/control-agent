@@ -1,4 +1,4 @@
-package internal
+package agent
 
 type DiskUsageReply struct {
 	Disks []*DiskUsage

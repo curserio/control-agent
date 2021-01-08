@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/curserio/control-agent/internal"
+	"github.com/curserio/control-agent/agent"
 	"net/rpc"
 )
 
@@ -12,7 +12,7 @@ func main() {
 		panic(err)
 	}
 
-	var reply = &internal.DiskUsageReply{}
+	var reply = &agent.DiskUsageReply{}
 
 	err = client.Call("SystemInfoAPI.DiskUsage", "", reply)
 	if err != nil {

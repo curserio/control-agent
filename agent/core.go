@@ -1,4 +1,4 @@
-package internal
+package agent
 
 type Core struct {
 	listener Listener

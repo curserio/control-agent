@@ -1,8 +1,8 @@
 package main
 
 import (
+	"github.com/curserio/control-agent/agent"
 	"github.com/curserio/control-agent/httplistener"
-	"github.com/curserio/control-agent/internal"
 	"github.com/curserio/control-agent/sysinfo"
 )
 
@@ -27,7 +27,7 @@ func main() {
 	systemInfoAPI := sysinfo.New()
 	agentListener := httplistener.New()
 
-	core := internal.Init(systemInfoAPI, agentListener)
+	core := agent.Init(systemInfoAPI, agentListener)
 	err := core.Start()
 	if err != nil {
 		panic(err)
