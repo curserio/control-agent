@@ -1,34 +1,44 @@
 package sysinfo
 
-import (
-	"github.com/shirou/gopsutil/disk"
-)
+import "github.com/shirou/gopsutil/disk"
 
-func diskMountpoints() ([]string, error) {
-	d, err := disk.Partitions(true)
+func mountPoints() ([]string, error) {
+	partitions, err := disk.Partitions(false)
 	if err != nil {
 		return nil, err
 	}
 
-	names := make([]string, len(d))
+	paths := make([]string, len(partitions))
 
-	for i, partition := range d {
-		names[i] = partition.Mountpoint
+	for i, partition := range partitions {
+		paths[i] = partition.Mountpoint
 	}
 
-	return names, nil
+	return paths, nil
 }
 
-func DisksUsage() ([]*disk.UsageStat, error) {
-	names, err := diskMountpoints()
+func diskUsage(path string) ([]*disk.UsageStat, error) {
+	paths, err := mountPoints()
 	if err != nil {
 		return nil, err
 	}
 
-	usages := make([]*disk.UsageStat, len(names))
+	if path != "" {
+		for _, p := range paths {
+			if path == p {
+				usage, err := disk.Usage(p)
+				if err != nil {
+					return nil, err
+				}
+				return []*disk.UsageStat{usage}, nil
+			}
+		}
+	}
 
-	for i, name := range names {
-		usage, err := disk.Usage(name)
+	usages := make([]*disk.UsageStat, len(paths))
+
+	for i, p := range paths {
+		usage, err := disk.Usage(p)
 		if err != nil {
 			return nil, err
 		}
